@@ -1,20 +1,17 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Montserrat } from "next/font/google";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const montserrat = Montserrat({
   subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700", "800"],
+  variable: "--font-montserrat",
 });
 
 export const metadata: Metadata = {
-  title: "Lasith Dissanayake | Materials Science & ML Engineer",
-  description: "Materials Science and Engineering Graduate specializing in Machine Learning, Simulations, and Computational Materials Science",
+  title: "Lasith Dissanayake | AI/ML Engineer & Full-Stack Developer",
+  description:
+    "AI/ML Engineer and Full-Stack Developer specializing in building intelligent applications, machine learning solutions, and scalable web platforms",
 };
 
 export default function RootLayout({
@@ -23,10 +20,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
+    <html lang="en" className="dark">
+      <body className={`${montserrat.variable} antialiased font-sans`}>
         {children}
       </body>
     </html>

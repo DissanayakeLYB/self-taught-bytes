@@ -4,6 +4,7 @@ import Projects from "./components/Projects";
 import Skills from "./components/Skills";
 import Experience from "./components/Experience";
 import Contact from "./components/Contact";
+import Footer from "./components/Footer";
 
 export default function HomePage() {
   return (
@@ -16,6 +17,7 @@ export default function HomePage() {
         <Experience />
         <Contact />
       </main>
+      <Footer />
     </div>
   );
 }

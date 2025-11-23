@@ -3,18 +3,21 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { FiMenu, FiX } from "react-icons/fi";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 const navLinks = [
-  { name: "Home", href: "#" },
-  { name: "Projects", href: "#projects" },
-  { name: "Skills", href: "#skills" },
-  { name: "Experience", href: "#experience" },
-  { name: "Contact", href: "#contact" },
+  { name: "Home", href: "/" },
+  { name: "About", href: "/about" },
+  { name: "Projects", href: "/projects" },
+  { name: "Blog", href: "/blog" },
+  { name: "Contact", href: "/#contact" },
 ];
 
 export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const pathname = usePathname();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -25,13 +28,23 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const scrollToSection = (href: string) => {
+  const handleNavClick = (href: string) => {
     setIsMobileMenuOpen(false);
-    if (href === "#") {
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    } else {
-      document.querySelector(href)?.scrollIntoView({ behavior: "smooth" });
+
+    // Handle anchor links on homepage
+    if (href.startsWith("/#")) {
+      const elementId = href.substring(2);
+      const element = document.getElementById(elementId);
+      if (element) {
+        element.scrollIntoView({ behavior: "smooth" });
+      }
     }
+  };
+
+  const isActive = (href: string) => {
+    if (href === "/") return pathname === "/";
+    if (href.startsWith("/#")) return pathname === "/" && false; // Can enhance this
+    return pathname === href;
   };
 
   return (
@@ -39,29 +52,37 @@ export default function Navbar() {
       <nav
         className={`fixed top-0 w-full z-50 transition-all duration-300 ${
           isScrolled
-            ? "bg-background/80 backdrop-blur-lg border-b shadow-sm"
+            ? "glass-card backdrop-blur-xl border-b border-white/10 shadow-2xl shadow-purple-500/10"
             : "bg-transparent"
         }`}
       >
         <div className="max-w-7xl mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
-            <button
-              onClick={() => scrollToSection("#")}
-              className="text-xl font-bold hover:text-primary transition-colors"
+            <Link
+              href="/"
+              className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 via-pink-400 to-purple-400 hover:scale-105 transition-transform"
             >
               LD
-            </button>
+            </Link>
 
             {/* Desktop Navigation */}
             <div className="hidden md:flex items-center gap-8">
               {navLinks.map((link) => (
-                <button
+                <Link
                   key={link.name}
-                  onClick={() => scrollToSection(link.href)}
-                  className="text-sm font-medium hover:text-primary transition-colors"
+                  href={link.href}
+                  onClick={() => handleNavClick(link.href)}
+                  className={`text-sm font-medium transition-all hover:text-purple-400 relative group ${
+                    isActive(link.href) ? "text-purple-400" : "text-foreground"
+                  }`}
                 >
                   {link.name}
-                </button>
+                  <span
+                    className={`absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-purple-500 to-pink-500 transition-all group-hover:w-full ${
+                      isActive(link.href) ? "w-full" : ""
+                    }`}
+                  />
+                </Link>
               ))}
             </div>
 
@@ -69,7 +90,7 @@ export default function Navbar() {
             <Button
               variant="ghost"
               size="icon"
-              className="md:hidden"
+              className="md:hidden hover:bg-purple-600/20 rounded-full"
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             >
               {isMobileMenuOpen ? (
@@ -86,18 +107,21 @@ export default function Navbar() {
       {isMobileMenuOpen && (
         <div className="fixed inset-0 z-40 md:hidden">
           <div
-            className="absolute inset-0 bg-background/95 backdrop-blur-lg"
+            className="absolute inset-0 glass-card backdrop-blur-xl"
             onClick={() => setIsMobileMenuOpen(false)}
           />
           <div className="relative h-full flex flex-col items-center justify-center gap-8">
             {navLinks.map((link) => (
-              <button
+              <Link
                 key={link.name}
-                onClick={() => scrollToSection(link.href)}
-                className="text-2xl font-medium hover:text-primary transition-colors"
+                href={link.href}
+                onClick={() => handleNavClick(link.href)}
+                className={`text-2xl font-medium transition-colors hover:text-purple-400 ${
+                  isActive(link.href) ? "text-purple-400" : "text-foreground"
+                }`}
               >
                 {link.name}
-              </button>
+              </Link>
             ))}
           </div>
         </div>
